@@ -9,15 +9,18 @@
  * 1.import EleValidator from './element-ui-form-validator.js'
  * 2.import { ... } from './element-ui-form-validator.js'
  * ------------------------------------------------------------
- * @param   {Object}     rule      表单验证规则[el-form :rules属性]
- * @param   {All}        value     表单验证内容[el-form :v-model属性, el-input v-model属性]
+ * @param   {Object}     rule      表单验证规则[el-form :rules属性 ref属性]
+ * @param   {All}        value     表单验证内容[el-form :v-model属性, el-input v-model属性, el-form-item prop属性]
  * @param   {Function}   callback  回调显示的内容[错误内容可实例化Error]
  * @type    {Object}
  */
 export default {
   checkPhone,
   checkPassword,
-  verifyCode
+  verifyCode,
+  NotNull,
+  isNumber,
+  isInteger
 }
 
 //  手机号长度
@@ -49,7 +52,7 @@ export function checkPhone (rule, value, callback) {
     // 正则校验手机正确性
     !REGULARPHONE.test(value)
     ) {
-    callback(new Error('请输入正确的手机号'))
+    callback(new Error('请输入正确格式的手机号码！'))
   } else {
     callback()
   }
@@ -82,3 +85,53 @@ export function verifyCode (rule, value, callback) {
     callback()
   }
 }
+
+/**
+ * NotNull 非空校验
+ * @return
+ */
+export function NotNull (rule, value, callback) {
+  //  判断值是否存在
+  if (!value) {
+    callback(new Error('此为必填项喔'))
+  } else if (Array.isArray(value)) {
+    if (value[0]) {
+      callback()
+    } else {
+      callback(new Error('此为必填项喔'))
+    }
+  } else {
+    callback()
+  }
+}
+
+/**
+ * isNumber 是否数值
+ * @return
+ */
+export function isNumber (rule, value, callback) {
+  //  判断值是否存在
+  if (!value) {
+    callback(new Error('此为必填项喔'))
+  } else if ((String(Number.parseFloat(value)) !== value)) {
+    callback(new Error('请输入数值喔'))
+  } else {
+    callback()
+  }
+}
+
+/**
+ * isInteger 是否数值
+ * @return
+ */
+export function isInteger (rule, value, callback) {
+  //  判断值是否存在
+  if (!value) {
+    callback(new Error('此为必填项喔'))
+  } else if ((String(Number.parseInt(value)) !== value) || (Number.parseInt(value) < 0)) {
+    callback(new Error('请输入正整数值喔'))
+  } else {
+    callback()
+  }
+}
+
